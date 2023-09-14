@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Signup = () => {
+
+  const navigate = useNavigate();
+  let data = useSelector((state) => state);
   const [formData, setFormData] = useState({
-    username: "",
+    fullName: "",
     email: "",
     password: "",
   });
@@ -12,26 +20,47 @@ const Signup = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle the signup logic here (e.g., send data to a server)
-    console.log("Signup form submitted:", formData);
+     console.log("hamzaaa");
+    const response = await axios
+      .post("http://localhost:8000/api/v1/auth/registration", formData)
+      .then((data) => {
+        console.log("text", data.data);
+        if (data.data.error === "Registration successfull!!") {
+          setFormData({
+            fullName: "",
+            email: "",
+            password: "",
+          });
+          return navigate("/login");
+        }
+        if (data.data.error) {
+           toast(data.data.error && data.data.error);
+        }
+        
+      });
   };
+  useEffect(() => {
+    if (data.userData.userInfo) {
+      navigate("/admin-dashboard");
+    }
+  }, []);
 
   return (
     <div className="mx-auto max-w-md p-4 bg-white shadow-lg rounded-lg">
-         <h1 className="text-center text-[25px] font-bold">Academy Admin</h1>
+      <h1 className="text-center text-[25px] font-bold">Academy Admin</h1>
       <h2 className="text-2xl font-semibold mb-4">Signup</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="username" className="block text-sm font-medium">
-            Username
+          <label htmlFor="fullName" className="block text-sm font-medium">
+            Full Name
           </label>
           <input
             type="text"
-            id="username"
-            name="username"
-            value={formData.username}
+            id="fullName"
+            name="fullName"
+            value={formData.fullName}
             onChange={handleChange}
             className="block w-full py-2 px-3 border rounded-lg bg-gray-100 focus:outline-none focus:border-blue-500"
             required
@@ -71,7 +100,10 @@ const Signup = () => {
         >
           Signup
         </button>
+        
       </form>
+      <ToastContainer />
+    <p className="mt-4">Already have an admin account? <Link className="text-green-500" to="/login" >Login Here</Link></p>
     </div>
   );
 };

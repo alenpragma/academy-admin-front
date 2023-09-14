@@ -1,6 +1,14 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios
+import { ToastContainer, toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { activeUser } from "../Slices/userSlice";
 
 const Login = () => {
+  const navigate = useNavigate();
+  let data = useSelector((state) => state);
+  let disp = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -13,13 +21,35 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle the login logic here (e.g., send data to a server)
-    console.log("Login form submitted:", formData);
+
+    axios
+      .post("http://localhost:8000/api/v1/auth/login", formData) // Replace with your backend login endpoint
+      .then((response) => {
+        console.log("hi",response.data[0]);
+        if(response.data.error){
+         return toast(response.data.error && response.data.error);
+        }
+        if (response) {
+          localStorage.setItem("userData", JSON.stringify(response.data));
+          disp(activeUser(response.data));
+          return navigate("/admin-dashboard");
+        }
+       
+      })
+      .catch((error) => {
+        console.error("Error during login:", error);
+        // Handle network or other errors
+      });
   };
+  useEffect(() => {
+    if (data.userData.userInfo) {
+      navigate("/admin-dashboard");
+    }
+  }, []);
 
   return (
     <div className="mx-auto max-w-md p-4 bg-white shadow-lg rounded-lg">
-        <h1 className="text-center text-[25px] font-bold">Academy Admin</h1>
+      <h1 className="text-center text-[25px] font-bold">Academy Admin</h1>
       <h2 className="text-2xl font-semibold mb-4">Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -57,6 +87,13 @@ const Login = () => {
           Login
         </button>
       </form>
+      <p className="mt-4">
+        Don't have an admin account?{" "}
+        <Link className="text-green-500" to="/">
+          Register Here
+        </Link>
+      </p>
+      <ToastContainer/>
     </div>
   );
 };

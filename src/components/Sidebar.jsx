@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
-
+  const navigate = useNavigate();
+  let data = useSelector((state) => state);
   useEffect(() => {
     // Open the sidebar by default on larger screens
     const screenWidth = window.innerWidth;
@@ -25,6 +28,12 @@ const Sidebar = () => {
     }
   };
 
+  useEffect(() => {
+    if (!data.userData.userInfo) {
+      navigate("/login");
+    }
+  }, []);
+
   return (
     <div className="flex h-screen">
       {/* Sidebar Toggle Button for Small Screens */}
@@ -43,7 +52,9 @@ const Sidebar = () => {
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
-        <div className="text-white text-2xl font-bold">Academy Admin Dashboard</div>
+        <div className="text-white text-2xl font-bold">
+          Academy Admin Dashboard
+        </div>
         <ul className="mt-8">
           <li className="mb-4">
             <button

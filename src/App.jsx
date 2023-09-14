@@ -1,11 +1,28 @@
 import React from 'react'
-import Sidebar from './components/Sidebar'
-import Login from './components/Login'
-import Signup from './components/Signup'
+import {
+    createBrowserRouter,
+    RouterProvider,
+    Route,
+    createRoutesFromElements,
+  } from "react-router-dom";
+import Signup from './components/Signup';
+import Login from './components/Login';
+import Sidebar from './components/Sidebar';
+  let router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route>
+        <Route path="/" element={<Signup />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+        <Route path="/admin-dashboard" element={<Sidebar />}></Route>
+
+      </Route>
+    )
+  );
+  
 
 const App = () => {
   return (
-    <div><Sidebar/></div>
+    <RouterProvider router={router} />
   )
 }
 
