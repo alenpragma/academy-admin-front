@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { BiSolidLogOut } from "react-icons/bi";
+import { activeUser } from "../Slices/userSlice";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
+  let disp = useDispatch()
   const navigate = useNavigate();
   let data = useSelector((state) => state);
+  console.log("dddddd",data.userData.userInfo[0].fullName);
+  
   useEffect(() => {
     // Open the sidebar by default on larger screens
     const screenWidth = window.innerWidth;
@@ -33,6 +38,11 @@ const Sidebar = () => {
       navigate("/login");
     }
   }, []);
+  let handlelogout = () =>{
+    localStorage.removeItem("userData");
+    disp(activeUser(null));
+    navigate("/login");
+  }
 
   return (
     <div className="flex h-screen">
@@ -101,6 +111,12 @@ const Sidebar = () => {
 
       {/* Content */}
       <div className={`flex-1 p-4 ${isOpen ? "ml-64" : "w-full"}`}>
+        <div className="bg-white p-4 rounded-md shadow flrx mb-2 flex items-center  justify-between">
+          <div className="text-[25px]">{data.userData.userInfo[0].fullName}.</div>
+          <div className="text-[30px] hover:text-[#d1d1d1]">
+            <BiSolidLogOut onClick={handlelogout} />
+          </div>
+        </div>
         <div className="bg-white p-4 rounded-md shadow h-full">
           {/* Conditional rendering based on activeTab */}
           {activeTab === "home" && (
