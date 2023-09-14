@@ -65,25 +65,29 @@ const Sidebar = () => {
         <div className="text-white text-2xl font-bold">
           Academy Admin Dashboard
         </div>
+        <div className="mt-3">
+            
+        <small className="text-[16px] mt-3  font-bold text-white">{data.userData.userInfo[0].role.charAt(0).toUpperCase()+data.userData.userInfo[0].role.slice(1,data.userData.userInfo[0].role.length)} Profile</small>
+        </div>
         <ul className="mt-8">
           <li className="mb-4">
             <button
-              onClick={() => changeTab("home")}
+              onClick={() => changeTab("Dashboard")}
               className={`text-white hover:text-gray-400 ${
-                activeTab === "home" ? "font-bold" : ""
+                activeTab === "Dashboard" ? "font-bold" : ""
               }`}
             >
-              Home
+              Dashboard
             </button>
           </li>
           <li className="mb-4">
             <button
-              onClick={() => changeTab("about")}
+              onClick={() => changeTab("Manage Admin")}
               className={`text-white hover:text-gray-400 ${
-                activeTab === "about" ? "font-bold" : ""
+                activeTab === "Manage Admin" ? "font-bold" : ""
               }`}
             >
-              About
+              Manage Admins
             </button>
           </li>
           <li className="mb-4">
@@ -119,15 +123,15 @@ const Sidebar = () => {
         </div>
         <div className="bg-white p-4 rounded-md shadow h-full">
           {/* Conditional rendering based on activeTab */}
-          {activeTab === "home" && (
+          {activeTab === "Dashboard" && (
             <div>
-              <h1 className="text-2xl font-bold mb-4">Home</h1>
+              <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
               <p>This is the home content.</p>
             </div>
           )}
-          {activeTab === "about" && (
+          {activeTab === "Manage Admin" && (
             <div>
-              <h1 className="text-2xl font-bold mb-4">About</h1>
+              <h1 className="text-2xl font-bold mb-4">Manage Admins</h1>
               <p>This is the about content.</p>
             </div>
           )}
