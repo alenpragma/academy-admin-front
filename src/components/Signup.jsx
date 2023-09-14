@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const Signup = () => {
-
   const navigate = useNavigate();
   let data = useSelector((state) => state);
   const [formData, setFormData] = useState({
@@ -22,9 +21,12 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-     console.log("hamzaaa");
+    console.log("hamzaaa");
     const response = await axios
-      .post("http://localhost:8000/api/v1/auth/registration", formData)
+      .post(
+        "https://academy-backend-95ag.onrender.com/api/v1/auth/registration",
+        formData
+      )
       .then((data) => {
         console.log("text", data.data);
         if (data.data.error === "Registration successfull!!") {
@@ -36,9 +38,8 @@ const Signup = () => {
           return navigate("/login");
         }
         if (data.data.error) {
-           toast(data.data.error && data.data.error);
+          toast(data.data.error && data.data.error);
         }
-        
       });
   };
   useEffect(() => {
@@ -100,10 +101,14 @@ const Signup = () => {
         >
           Signup
         </button>
-        
       </form>
       <ToastContainer />
-    <p className="mt-4">Already have an admin account? <Link className="text-green-500" to="/login" >Login Here</Link></p>
+      <p className="mt-4">
+        Already have an admin account?{" "}
+        <Link className="text-green-500" to="/login">
+          Login Here
+        </Link>
+      </p>
     </div>
   );
 };

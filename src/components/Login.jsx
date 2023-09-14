@@ -23,7 +23,7 @@ const Login = () => {
     e.preventDefault();
 
     axios
-      .post("http://localhost:8000/api/v1/auth/login", formData) // Replace with your backend login endpoint
+      .post("https://academy-backend-95ag.onrender.com/api/v1/auth/login", formData) // Replace with your backend login endpoint
       .then((response) => {
         console.log("hi",response.data[0]);
         if(response.data.error){
