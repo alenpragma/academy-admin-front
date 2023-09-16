@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { BiSolidLogOut } from "react-icons/bi";
 import { activeUser } from "../Slices/userSlice";
+import ManageAdmins from "./ManageAdmins";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("home");
+  const [activeTab, setActiveTab] = useState("Dashboard");
   let disp = useDispatch()
   const navigate = useNavigate();
   let data = useSelector((state) => state);
@@ -80,16 +81,20 @@ const Sidebar = () => {
               Dashboard
             </button>
           </li>
+          {
+
           <li className="mb-4">
             <button
               onClick={() => changeTab("Manage Admin")}
               className={`text-white hover:text-gray-400 ${
-                activeTab === "Manage Admin" ? "font-bold" : ""
+                activeTab === `Manage Admin` ? "font-bold" : ""
               }`}
             >
-              Manage Admins
+              { (data.userData.userInfo[0].role === "superAdmin" || data.userData.userInfo[0].role === "owner")  ? "Manage Admins":"All Admins"}
+              
             </button>
           </li>
+          }
           <li className="mb-4">
             <button
               onClick={() => changeTab("services")}
@@ -121,7 +126,7 @@ const Sidebar = () => {
             <BiSolidLogOut onClick={handlelogout} />
           </div>
         </div>
-        <div className="bg-white p-4 rounded-md shadow h-full">
+        <div className="bg-white p-4 rounded-md shadow h-full overflow-y-scroll">
           {/* Conditional rendering based on activeTab */}
           {activeTab === "Dashboard" && (
             <div>
@@ -129,10 +134,10 @@ const Sidebar = () => {
               <p>This is the home content.</p>
             </div>
           )}
-          {activeTab === "Manage Admin" && (
+          { activeTab === "Manage Admin" && (
             <div>
               <h1 className="text-2xl font-bold mb-4">Manage Admins</h1>
-              <p>This is the about content.</p>
+              <ManageAdmins/>
             </div>
           )}
           {activeTab === "services" && (

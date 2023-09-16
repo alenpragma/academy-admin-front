@@ -30,12 +30,13 @@ const Signup = () => {
       .then((data) => {
         console.log("text", data.data);
         if (data.data.error === "Registration successfull!!") {
+          navigate("/login");
           setFormData({
             fullName: "",
             email: "",
             password: "",
           });
-          return navigate("/login");
+          return 
         }
         if (data.data.error) {
           toast(data.data.error && data.data.error);
