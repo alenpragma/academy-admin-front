@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { BiSolidLogOut } from "react-icons/bi";
 import { activeUser } from "../Slices/userSlice";
 import ManageAdmins from "./ManageAdmins";
+import AddBlog from "./AddBlog";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -97,12 +98,12 @@ const Sidebar = () => {
           }
           <li className="mb-4">
             <button
-              onClick={() => changeTab("services")}
+              onClick={() => changeTab("Add Blogs")}
               className={`text-white hover:text-gray-400 ${
-                activeTab === "services" ? "font-bold" : ""
+                activeTab === "Add Blogs" ? "font-bold" : ""
               }`}
             >
-              Services
+              Add Blogs
             </button>
           </li>
           <li className="mb-4">
@@ -140,10 +141,10 @@ const Sidebar = () => {
               <ManageAdmins/>
             </div>
           )}
-          {activeTab === "services" && (
+          {activeTab === "Add Blogs" && (
             <div>
-              <h1 className="text-2xl font-bold mb-4">Services</h1>
-              <p>This is the services content.</p>
+              <h1 className="text-2xl font-bold mb-4">Add Blogs</h1>
+            <AddBlog/>
             </div>
           )}
           {activeTab === "contact" && (
