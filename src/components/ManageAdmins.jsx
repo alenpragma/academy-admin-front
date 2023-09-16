@@ -14,7 +14,7 @@ const ManageAdmins = () => {
 
     // Send a POST request to update the user's role
     axios
-      .post("http://localhost:8000/api/v1/auth/updateRole", {
+      .post("https://academy-backend-95ag.onrender.com/api/v1/auth/updateRole", {
         userId: userId,
         newRole: newRole,
       })
@@ -33,7 +33,7 @@ const ManageAdmins = () => {
 
     // Send a POST request to update the user's role
     axios
-      .post("http://localhost:8000/api/v1/auth/updateRole", {
+      .post("https://academy-backend-95ag.onrender.com/api/v1/auth/updateRole", {
         userId: userId,
         newRole: newRole,
       })
@@ -51,7 +51,7 @@ const ManageAdmins = () => {
     setIsSuperadmin(false);
     setIsDeleteAdmin(true);
     axios
-      .post("http://localhost:8000/api/v1/auth/deleteAdmin", { adminId: id })
+      .post("https://academy-backend-95ag.onrender.com/api/v1/auth/deleteAdmin", { adminId: id })
       .then(() => {
         location.reload();
       });
@@ -59,7 +59,7 @@ const ManageAdmins = () => {
 
   const fetchUsers = () => {
     // Fetch all users from the backend endpoint
-    fetch("http://localhost:8000/api/v1/auth/allAdmins")
+    fetch("https://academy-backend-95ag.onrender.com/api/v1/auth/allAdmins")
       .then((response) => response.json())
       .then((data) => {
         // Set the users in the state
