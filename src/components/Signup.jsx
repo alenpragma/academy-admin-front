@@ -4,8 +4,10 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { InfinitySpin } from "react-loader-spinner";
 
 const Signup = () => {
+  let [loader, setLoader] = useState(false);
   const navigate = useNavigate();
   let data = useSelector((state) => state);
   const [formData, setFormData] = useState({
@@ -20,6 +22,7 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
+    setLoader(true);
     e.preventDefault();
     console.log("hamzaaa");
     const response = await axios
@@ -36,10 +39,11 @@ const Signup = () => {
             email: "",
             password: "",
           });
-          return 
+          return;
         }
         if (data.data.error) {
           toast(data.data.error && data.data.error);
+          setLoader(false);
         }
       });
   };
@@ -96,12 +100,18 @@ const Signup = () => {
             required
           />
         </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white hover:bg-blue-600 py-2 px-4 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
-        >
-          Signup
-        </button>
+        <div className="flex justify-center">
+          {loader ? (
+            <InfinitySpin color="#d1d1d1" />
+          ) : (
+            <button
+              type="submit"
+              className="bg-blue-500 text-white hover:bg-blue-600 py-2 px-4 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+            >
+              Signup
+            </button>
+          )}
+        </div>
       </form>
       <ToastContainer />
       <p className="mt-4">

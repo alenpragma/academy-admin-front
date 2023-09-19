@@ -52,9 +52,9 @@ const Sidebar = () => {
       {isOpen ? null : (
         <button
           onClick={toggleSidebar}
-          className="md:hidden fixed top-0 left-0 z-20 m-4 p-2 bg-gray-800 text-white rounded-full"
+          className="md:hidden fixed bottom-4  right-4 z-20 w-[30px] h-[30px] m-4  bg-gray-800 text-white rounded-full "
         >
-          &#x22EF; {/* 3-dot icon */}
+         +
         </button>
       )}
 

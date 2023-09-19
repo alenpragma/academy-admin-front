@@ -4,8 +4,10 @@ import axios from "axios"; // Import axios
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { activeUser } from "../Slices/userSlice";
+import { InfinitySpin } from "react-loader-spinner";
 
 const Login = () => {
+  let [loader,setLoader]= useState(false)
   const navigate = useNavigate();
   let data = useSelector((state) => state);
   let disp = useDispatch();
@@ -21,15 +23,17 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+setLoader(true)
     axios
       .post("https://academy-backend-95ag.onrender.com/api/v1/auth/login", formData) // Replace with your backend login endpoint
       .then((response) => {
         console.log("hi",response.data[0]);
         if(response.data.error){
+          setLoader(false)
          return toast(response.data.error && response.data.error);
         }
         if (response) {
+          setLoader(true)
           localStorage.setItem("userData", JSON.stringify(response.data));
           disp(activeUser(response.data));
           return navigate("/admin-dashboard");
@@ -38,6 +42,7 @@ const Login = () => {
       })
       .catch((error) => {
         console.error("Error during login:", error);
+        setLoader(false)
         // Handle network or other errors
       });
   };
@@ -80,12 +85,18 @@ const Login = () => {
             required
           />
         </div>
+        {
+          loader ?
+          <InfinitySpin color="#d1d1d1" />
+          :
+
         <button
           type="submit"
           className="bg-blue-500 text-white hover:bg-blue-600 py-2 px-4 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
         >
           Login
         </button>
+        }
       </form>
       <p className="mt-4">
         Don't have an admin account?{" "}
