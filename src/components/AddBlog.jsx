@@ -338,6 +338,7 @@ const AddBlog = () => {
                             {blog.title}
                           </h2>
                           <p className="text-gray-600">{blog.content}</p>
+                          <small className={`${blog.status === "pending" ? "text-red-700":"text-green-700"} font-semibold`}>{blog.status}</small>
                         </div>
                         <div className="ml-auto flex gap-x-3">
                           {edit && editIndex === blogIndex ? (
