@@ -25,8 +25,8 @@ const AddBlog = () => {
     authorID: data.userData.userInfo[0]._id,
     authorEmail: data.userData.userInfo[0].email,
   });
-
   const handleChange = (e) => {
+      
     setUpdateBtnShow(true);
     const { name, value } = e.target;
     let truncatedValue = value;
@@ -79,6 +79,7 @@ const AddBlog = () => {
       )
       .then((response) => {
         // Check if the request was successful
+        location.reload()
         console.log(response);
         if (response) {
           toast("Blog post created successfully");
