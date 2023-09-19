@@ -19,6 +19,7 @@ const AddBlog = () => {
     title: "",
     content: "",
     imageUrl: "",
+    status: data.userData.userInfo[0].role === "admin" ? "pending" : "approved",
     category: "Community",
     author: data.userData.userInfo[0].fullName,
     authorID: data.userData.userInfo[0]._id,
