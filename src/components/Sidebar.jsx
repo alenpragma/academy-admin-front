@@ -137,7 +137,7 @@ const Sidebar = () => {
           )}
           { activeTab === "Manage Admin" && (
             <div>
-              <h1 className="text-2xl font-bold mb-4">Manage Admins</h1>
+              <h1 className="text-2xl font-bold mb-4">{data.userData.userInfo[0].role === "admin"?"All Admins":"Manage Admins"}</h1>
               <ManageAdmins/>
             </div>
           )}
