@@ -11,6 +11,7 @@ const AddBlog = () => {
   let [blogLoader, setBlogLoader] = useState(true);
   let [updateLoader, setUpdateLoader] = useState(false);
   let [updateBtnShow, setUpdateBtnShow] = useState(false);
+  let [imageFile, setImageFile] = useState(null);
   let [editId, setEditId] = useState();
   let [edit, setEdit] = useState(false);
   let [editIndex, setEditIndex] = useState(-1);
@@ -18,7 +19,7 @@ const AddBlog = () => {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
-    imageUrl: "",
+    imageUrl: [],
     status: data.userData.userInfo[0].role === "admin" ? "pending" : "approved",
     category: "Community",
     author: data.userData.userInfo[0].fullName,
@@ -26,7 +27,6 @@ const AddBlog = () => {
     authorEmail: data.userData.userInfo[0].email,
   });
   const handleChange = (e) => {
-      
     setUpdateBtnShow(true);
     const { name, value } = e.target;
     let truncatedValue = value;
@@ -55,7 +55,10 @@ const AddBlog = () => {
     });
     console.log(formData);
   };
-
+  const handleImageChange = (e) => {
+    console.log(e.target.files[0]);
+    setImageFile(e.target.files[0]);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoader(true);
@@ -75,11 +78,14 @@ const AddBlog = () => {
     await axios
       .post(
         "https://academy-backend-95ag.onrender.com/api/v1/blog/createBlog",
-        formData
+        {
+          ...formData,
+          imageUrl: imageFile,
+        }
       )
       .then((response) => {
         // Check if the request was successful
-        location.reload()
+        location.reload();
         console.log(response);
         if (response) {
           toast("Blog post created successfully");
@@ -180,10 +186,13 @@ const AddBlog = () => {
     setUpdateLoader(true);
     console.log("dhnjfchjdhcj");
     await axios
-      .post("https://academy-backend-95ag.onrender.com/api/v1/blog/updateBlog", {
-        ...formData,
-        _id: editId,
-      })
+      .post(
+        "https://academy-backend-95ag.onrender.com/api/v1/blog/updateBlog",
+        {
+          ...formData,
+          _id: editId,
+        }
+      )
       .then((response) => {
         setEdit(false);
         setUpdateLoader(false);
@@ -201,17 +210,23 @@ const AddBlog = () => {
   // handle delete
   let handleDelete = (id) => {
     axios
-      .post("https://academy-backend-95ag.onrender.com/api/v1/blog/deleteBlog", { _id: id })
+      .post(
+        "https://academy-backend-95ag.onrender.com/api/v1/blog/deleteBlog",
+        { _id: id }
+      )
       .then((response) => {
         console.log(response);
         location.reload();
       });
   };
 
+  // ...
+
+  // console.log(imageFile);
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Add a New Blog</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="flex flex-col md:flex-row gap-x-3">
           <div className="mb-4">
             <label htmlFor="title" className="block text-gray-700 font-bold">
@@ -233,11 +248,12 @@ const AddBlog = () => {
               Image URL
             </label>
             <input
-              type="text"
+              type="file"
               id="imageUrl"
               name="imageUrl"
-              value={formData.imageUrl}
-              onChange={handleChange}
+              accept="image/*"
+              // value={formData.imageUrl}
+              onChange={handleImageChange}
               className="border border-gray-300 rounded-md p-2 w-full"
               placeholder="Enter the image URL"
               required
@@ -338,7 +354,15 @@ const AddBlog = () => {
                             {blog.title}
                           </h2>
                           <p className="text-gray-600">{blog.content}</p>
-                          <small className={`${blog.status === "pending" ? "text-red-700":"text-green-700"} font-semibold`}>{blog.status}</small>
+                          <small
+                            className={`${
+                              blog.status === "pending"
+                                ? "text-red-700"
+                                : "text-green-700"
+                            } font-semibold`}
+                          >
+                            {blog.status}
+                          </small>
                         </div>
                         <div className="ml-auto flex gap-x-3">
                           {edit && editIndex === blogIndex ? (
