@@ -394,7 +394,7 @@ const AddBlog = () => {
               name="content"
               value={formData.content}
               onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2 w-full md:w-[350px] "
+              className="border border-gray-300 rounded-md p-2 w-full md:w-[250px] "
               placeholder="Enter the content"
               required
             />
