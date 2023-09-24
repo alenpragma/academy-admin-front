@@ -11,7 +11,8 @@ const AddBlog = () => {
   let [blogLoader, setBlogLoader] = useState(true);
   let [updateLoader, setUpdateLoader] = useState(false);
   let [updateBtnShow, setUpdateBtnShow] = useState(false);
-  let [imageFile, setImageFile] = useState(null);
+  let [editHeader,setEditHeader] = useState("")
+
   let [editId, setEditId] = useState();
   let [edit, setEdit] = useState(false);
   let [editIndex, setEditIndex] = useState(-1);
@@ -19,13 +20,26 @@ const AddBlog = () => {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
-    imageUrl: [],
-    status: data.userData.userInfo[0].role === "admin" ? "pending" : "approved",
+    image: "",
+    status:
+      data.userData.userInfo[0].role === "admin"
+        ? "pending"
+        : data.userData.userInfo[0].role === "owner"
+        ? "Post by owner"
+        : "Post by superadmin",
     category: "Community",
     author: data.userData.userInfo[0].fullName,
     authorID: data.userData.userInfo[0]._id,
     authorEmail: data.userData.userInfo[0].email,
   });
+
+  const handleImageChange = async (e) => {
+    setUpdateBtnShow(true);
+    setFormData({
+      ...formData,
+      image: e.target.files[0],
+    });
+  };
   const handleChange = (e) => {
     setUpdateBtnShow(true);
     const { name, value } = e.target;
@@ -53,34 +67,95 @@ const AddBlog = () => {
       ...formData,
       [name]: truncatedValue,
     });
+
     console.log(formData);
   };
-  const handleImageChange = (e) => {
-    console.log(e.target.files[0]);
-    setImageFile(e.target.files[0]);
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoader(true);
-    // Check for empty fields
-    if (
-      !formData.title ||
-      !formData.content ||
-      !formData.imageUrl ||
-      !formData.category
-    ) {
-      toast("All fields are required");
-      setLoader(false);
-      return;
-    }
 
-    // Make a POST request to the server
+  //   console.log("====================================");
+  //   console.log(e);
+  //   console.log("====================================");
+  //   e.preventDefault();
+  //   setLoader(true);
+  //   // Check for empty fields
+  //   if (
+  //     !formData.title ||
+  //     !formData.content ||
+  //     // !formData.image ||
+  //     !formData.category
+  //   ) {
+  //     toast("All fields are required");
+  //     setLoader(false);
+  //     return;
+  //   }
+
+  //   await axios
+  //     .post(
+  //       "http://localhost:8000/api/v1/blog/createBlog",
+  //       {
+  //         ...formData,
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       // Check if the request was successful
+  //       // location.reload();
+  //       console.log(response);
+  //       if (response) {
+  //         toast("Blog post created successfully");
+  //         setLoader(false);
+  //         // Clear the form fields
+  //         setFormData({
+  //           title: "",
+  //           content: "",
+  //           image: "",
+  //           category: "Community", // Reset category to default
+  //         });
+  //       } else {
+  //         setLoader(false);
+  //         showToast("Failed to create a blog post");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setLoader(false);
+  //       showToast("An error occurred while creating the blog post");
+  //     });
+  // };
+
+  let handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (!edit) {
+      return handleSubmit();
+    }
+    if (edit) {
+      return handleUpdate();
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    setLoader(true);
+    const sendformData = new FormData();
+
+    sendformData.append("title", formData.title);
+    sendformData.append("content", formData.content);
+    sendformData.append("category", formData.category);
+    sendformData.append("image", formData.image); // Add the image file to the FormData
+    sendformData.append("author", formData.author); // Add author field
+    sendformData.append("authorID", formData.authorID); // Add authorID field
+    sendformData.append("authorEmail", formData.authorEmail); // Add authorEmail field
+    sendformData.append("status", formData.status); // Add status field
+
     await axios
       .post(
         "https://academy-backend-95ag.onrender.com/api/v1/blog/createBlog",
+        sendformData, // Send the FormData object
         {
-          ...formData,
-          imageUrl: imageFile,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       )
       .then((response) => {
@@ -94,8 +169,12 @@ const AddBlog = () => {
           setFormData({
             title: "",
             content: "",
-            imageUrl: "",
+            image: "", // Reset the image field
             category: "Community", // Reset category to default
+            author: "", // Reset author field
+            authorID: "", // Reset authorID field
+            authorEmail: "", // Reset authorEmail field
+            status: "pending", // Reset status to default
           });
         } else {
           setLoader(false);
@@ -103,7 +182,6 @@ const AddBlog = () => {
         }
       })
       .catch((error) => {
-        console.error(error);
         setLoader(false);
         showToast("An error occurred while creating the blog post");
       });
@@ -151,10 +229,10 @@ const AddBlog = () => {
     // Fetch users when the component mounts
     fetchUsers();
   }, []); //
-  console.log("dddd", users);
 
   // edit blog
   let handleEdit = (blog, blogIndex) => {
+    setEditHeader(blog.title)
     setEditId(blog._id);
     console.log(editId);
     setEdit(true);
@@ -162,48 +240,73 @@ const AddBlog = () => {
     setFormData({
       title: blog.title,
       content: blog.content,
-      imageUrl: blog.imageUrl,
+
       category: blog.category,
       author: data.userData.userInfo[0].fullName,
       authorID: data.userData.userInfo[0]._id,
       authorEmail: data.userData.userInfo[0].email,
     });
-    console.log(blog);
   };
   let cancleUpdate = () => {
+    setEditHeader()
     setEditIndex(-1);
     setFormData({
       title: "",
       content: "",
-      imageUrl: "",
+      image: "",
       category: "Community", // Reset category to default
     });
     setEdit(false);
   };
   // update the data from database
 
-  let handleUpdate = async () => {
+  let handleUpdate = async (e) => {
     setUpdateLoader(true);
     console.log("dhnjfchjdhcj");
+    const editformData = new FormData();
+    editformData.append("title", formData.title);
+    editformData.append("content", formData.content);
+    editformData.append("category", formData.category);
+    editformData.append("image", formData.image); // Add the image file to the FormData
+    editformData.append("author", formData.author); // Add author field
+    editformData.append("authorID", formData.authorID); // Add authorID field
+    editformData.append("authorEmail", formData.authorEmail); // Add authorEmail field
+    editformData.append(
+      "status",
+      data.userData.userInfo[0].role === "admin"
+        ? "pending"
+        : data.userData.userInfo[0].role === "owner"
+        ? "Post by owner"
+        : "Post by superadmin"
+    );
+    editformData.append("_id", editId); // Add status field
+    console.log(editformData);
     await axios
       .post(
         "https://academy-backend-95ag.onrender.com/api/v1/blog/updateBlog",
+        editformData,
+
         {
-          ...formData,
-          _id: editId,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       )
       .then((response) => {
+        location.reload();
         setEdit(false);
         setUpdateLoader(false);
         setFormData({
           title: "",
           content: "",
-          imageUrl: "",
+          image: "",
           category: "Community", // Reset category to default
         });
         toast("blog successfully updated");
         console.log(response);
+      })
+      .catch(() => {
+        setUpdateLoader(false);
       });
   };
 
@@ -225,8 +328,12 @@ const AddBlog = () => {
   // console.log(imageFile);
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Add a New Blog</h1>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
+      <h1 className="text-2xl font-bold mb-4">{!edit?"Add a New Blog":`Edit your Blog - ${editHeader}`}</h1>
+      <form
+        onSubmit={handleFormSubmit}
+        encType="multipart/form-data"
+        method="post"
+      >
         <div className="flex flex-col md:flex-row gap-x-3">
           <div className="mb-4">
             <label htmlFor="title" className="block text-gray-700 font-bold">
@@ -244,15 +351,15 @@ const AddBlog = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="imageUrl" className="block text-gray-700 font-bold">
-              Image URL
+            <label htmlFor="image" className="block text-gray-700 font-bold">
+              Image
             </label>
             <input
               type="file"
-              id="imageUrl"
-              name="imageUrl"
+              id="image"
+              name="image"
               accept="image/*"
-              // value={formData.imageUrl}
+              // value={formData.image}
               onChange={handleImageChange}
               className="border border-gray-300 rounded-md p-2 w-full"
               placeholder="Enter the image URL"
@@ -301,12 +408,12 @@ const AddBlog = () => {
           ) : (
             <div className="flex gap-x-3">
               {updateBtnShow && (
-                <div
-                  onClick={handleUpdate}
+                <button
+                  type="submit"
                   className="bg-blue-500 text-white px-2 py-1 cursor-pointer rounded-md hover:bg-blue-600"
                 >
                   Update
-                </div>
+                </button>
               )}
               <button
                 onClick={cancleUpdate}
@@ -345,7 +452,7 @@ const AddBlog = () => {
                         className="bg-white rounded-lg p-4 flex items-center shadow-lg mb-2"
                       >
                         <img
-                          src={blog.imageUrl} // Replace with your image URL
+                          src={blog.image} // Replace with your image URL
                           alt="Blog Image"
                           className="w-16 h-16 rounded-full mr-4"
                         />
