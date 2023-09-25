@@ -45,23 +45,15 @@ const AddBlog = () => {
     const { name, value } = e.target;
     let truncatedValue = value;
 
-    // Limit title to 20 words
+    // Limit title to 50 words
     if (name === "title") {
       const words = value.trim().split(/\s+/);
-      if (words.length > 20) {
-        truncatedValue = words.slice(0, 20).join(" ");
+      if (words.length > 50) {
+        truncatedValue = words.slice(0, 50).join(" ");
         showToast("Title cannot exceed 20 words");
       }
     }
 
-    // Limit content to 300 words
-    if (name === "content") {
-      const words = value.trim().split(/\s+/);
-      if (words.length > 300) {
-        truncatedValue = words.slice(0, 300).join(" ");
-        showToast("Content cannot exceed 300 words");
-      }
-    }
 
     setFormData({
       ...formData,
@@ -323,9 +315,15 @@ const AddBlog = () => {
       });
   };
 
-  // ...
+  const truncateText = (text, maxLength) => {
+    const words = text.split(" ");
+    if (words.length > maxLength) {
+      return words.slice(0, maxLength).join(" ") + "...";
+    } else {
+      return text;
+    }
+  };
 
-  // console.log(imageFile);
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">{!edit?"Add a New Blog":`Edit your Blog - ${editHeader}`}</h1>
@@ -337,7 +335,7 @@ const AddBlog = () => {
         <div className="flex flex-col md:flex-row gap-x-3">
           <div className="mb-4">
             <label htmlFor="title" className="block text-gray-700 font-bold">
-              Title (Max 20 words)
+              Title (Max 50 words)
             </label>
             <input
               type="text"
@@ -387,7 +385,7 @@ const AddBlog = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="content" className="block text-gray-700 font-bold">
-              Content (Max 300 words)
+              Content 
             </label>
             <textarea
               id="content"
@@ -460,7 +458,7 @@ const AddBlog = () => {
                           <h2 className="text-lg font-semibold">
                             {blog.title}
                           </h2>
-                          <p className="text-gray-600">{blog.content}</p>
+                          <p className="text-gray-600">{truncateText(blog.content, 20)}</p>
                           <small
                             className={`${
                               blog.status === "pending"
