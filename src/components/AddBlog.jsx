@@ -11,7 +11,7 @@ const AddBlog = () => {
   let [blogLoader, setBlogLoader] = useState(true);
   let [updateLoader, setUpdateLoader] = useState(false);
   let [updateBtnShow, setUpdateBtnShow] = useState(false);
-  let [editHeader,setEditHeader] = useState("")
+  let [editHeader, setEditHeader] = useState("");
 
   let [editId, setEditId] = useState();
   let [edit, setEdit] = useState(false);
@@ -53,7 +53,6 @@ const AddBlog = () => {
         showToast("Title cannot exceed 20 words");
       }
     }
-
 
     setFormData({
       ...formData,
@@ -224,7 +223,7 @@ const AddBlog = () => {
 
   // edit blog
   let handleEdit = (blog, blogIndex) => {
-    setEditHeader(blog.title)
+    setEditHeader(blog.title);
     setEditId(blog._id);
     console.log(editId);
     setEdit(true);
@@ -240,7 +239,7 @@ const AddBlog = () => {
     });
   };
   let cancleUpdate = () => {
-    setEditHeader()
+    setEditHeader();
     setEditIndex(-1);
     setFormData({
       title: "",
@@ -323,10 +322,36 @@ const AddBlog = () => {
       return text;
     }
   };
+  let [showAddCategory, setShowAddCategory] = useState(false);
+  let [category, setCategory] = useState("");
+  let [allCategory, setAllCategory] = useState([]);
+  let handleCategory = () => {
+    axios
+      .post(
+        "https://academy-backend-95ag.onrender.com/api/v1/category/category",
+        { name : category }
+      )
+      .then((response) => {
+        setCategory("")
+        console.log(response);
+        location.reload();
+      });
+  };
 
+
+    let fetchCategory = ()=>{
+      axios.get("https://academy-backend-95ag.onrender.com/api/v1/category/categories").then((response)=>{
+        setAllCategory(response.data);
+      })
+    }
+ useEffect(()=>{
+  fetchCategory()
+ },[])
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">{!edit?"Add a New Blog":`Edit your Blog - ${editHeader}`}</h1>
+      <h1 className="text-2xl font-bold mb-4">
+        {!edit ? "Add a New Blog" : `Edit your Blog - ${editHeader}`}
+      </h1>
       <form
         onSubmit={handleFormSubmit}
         encType="multipart/form-data"
@@ -366,8 +391,34 @@ const AddBlog = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="category" className="block text-gray-700 font-bold">
-              Category
+            {showAddCategory && (
+              <div className="flex">
+                <input
+                  onChange={(e) => setCategory(e.target.value)}
+                  type="text"
+                  className="border p-1"
+                />
+                <div
+                  className=" p-1 border rounded-md cursor-pointer shadow-xl hover:bg-black hover:text-[#fff]"
+                  onClick={handleCategory}
+                >
+                  Add
+                </div>
+              </div>
+            )}
+            <label
+              htmlFor="category"
+              className=" text-gray-700 font-bold flex justify-between"
+            >
+              Category{" "}
+              {data.userData.userInfo[0].role === "owner" && (
+                <div
+                  onClick={() => setShowAddCategory((prev) => !prev)}
+                  className="w-[20px] h-[20px] flex shadow-xl justify-center items-center hover:bg-black hover:text-[#fff] rounded-lg"
+                >
+                  <span className="mt-[-3px]">+</span>
+                </div>
+              )}
             </label>
             <select
               id="category"
@@ -376,16 +427,16 @@ const AddBlog = () => {
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 w-full"
             >
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
+              {allCategory.map((category) => (
+                <option key={category} value={category.name}>
+                  {category.name}
                 </option>
               ))}
             </select>
           </div>
           <div className="mb-4">
             <label htmlFor="content" className="block text-gray-700 font-bold">
-              Content 
+              Content
             </label>
             <textarea
               id="content"
@@ -458,7 +509,9 @@ const AddBlog = () => {
                           <h2 className="text-lg font-semibold">
                             {blog.title}
                           </h2>
-                          <p className="text-gray-600">{truncateText(blog.content, 20)}</p>
+                          <p className="text-gray-600">
+                            {truncateText(blog.content, 20)}
+                          </p>
                           <small
                             className={`${
                               blog.status === "pending"
