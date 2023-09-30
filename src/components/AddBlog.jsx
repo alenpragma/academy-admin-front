@@ -5,6 +5,7 @@ import axios from "axios";
 import { data } from "autoprefixer";
 import { useSelector } from "react-redux";
 import { InfinitySpin } from "react-loader-spinner";
+import { FaTrashAlt } from "react-icons/fa";
 
 const AddBlog = () => {
   let [loader, setLoader] = useState(false);
@@ -12,6 +13,7 @@ const AddBlog = () => {
   let [updateLoader, setUpdateLoader] = useState(false);
   let [updateBtnShow, setUpdateBtnShow] = useState(false);
   let [editHeader, setEditHeader] = useState("");
+  let [manageCategoryDropdown, setManageCategoryDropdown] = useState(false);
 
   let [editId, setEditId] = useState();
   let [edit, setEdit] = useState(false);
@@ -329,24 +331,42 @@ const AddBlog = () => {
     axios
       .post(
         "https://academy-backend-95ag.onrender.com/api/v1/category/category",
-        { name : category }
+        {
+          name:
+            category.charAt(0).toUpperCase() +
+            category.slice(1, category.length),
+        }
       )
       .then((response) => {
-        setCategory("")
+        setCategory("");
         console.log(response);
         location.reload();
       });
   };
 
-
-    let fetchCategory = ()=>{
-      axios.get("https://academy-backend-95ag.onrender.com/api/v1/category/categories").then((response)=>{
+  let fetchCategory = () => {
+    axios
+      .get(
+        "https://academy-backend-95ag.onrender.com/api/v1/category/categories"
+      )
+      .then((response) => {
         setAllCategory(response.data);
-      })
-    }
- useEffect(()=>{
-  fetchCategory()
- },[])
+      });
+  };
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+  console.log(allCategory);
+  let handleCategoryDelete = (id) => {
+    axios
+      .post(
+        "https://academy-backend-95ag.onrender.com/api/v1/category/delete-category",
+        { categoryId: id }
+      )
+      .then((response) => {
+        location.reload();
+      });
+  };
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">
@@ -433,6 +453,27 @@ const AddBlog = () => {
                 </option>
               ))}
             </select>
+            <div className="flex justify-center flex-col mt-2">
+              <small
+                className="text-center p-2 shadow-lg rounded-lg cursor-pointer hover:bg-black hover:text-white"
+                onClick={() => setManageCategoryDropdown((prev) => !prev)}
+              >
+                Manage Categories
+              </small>
+              {manageCategoryDropdown && (
+                <ul className="shadow-md rounded-md mt-3">
+                  {allCategory.map((item) => (
+                    <li className="border-b px-2 flex justify-between items-center">
+                      {item.name}
+                      <FaTrashAlt
+                        className="hover:text-[#d1d1d1]"
+                        onClick={() => handleCategoryDelete(item._id)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
           <div className="mb-4">
             <label htmlFor="content" className="block text-gray-700 font-bold">
