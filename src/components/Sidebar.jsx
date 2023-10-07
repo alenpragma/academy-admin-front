@@ -7,6 +7,7 @@ import ManageAdmins from "./ManageAdmins";
 import AddBlog from "./AddBlog";
 import PendingPosts from "./PendingPosts";
 import axios from "axios";
+import AllBlogs from "./AllBlogs";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,7 +53,9 @@ const Sidebar = () => {
   useEffect(() => {
     async function getPendingBlogs() {
       await axios
-        .get("https://academy-backend-95ag.onrender.com/api/v1/blog/getPendingBlogs")
+        .get(
+          "https://academy-backend-95ag.onrender.com/api/v1/blog/getPendingBlogs"
+        )
         .then((res) => {
           console.log("====================================");
           setPendingBlogs(res.data.blogs);
@@ -137,7 +140,22 @@ const Sidebar = () => {
                   activeTab === "Pending Posts" ? "font-bold" : ""
                 }`}
               >
-                Pending Posts <div className="w-[20px] h-[20px] bg-white rounded-full flex justify-center items-center text-black text-[10px]">{pendingBlogs.length}</div>
+                Pending Posts{" "}
+                <div className="w-[20px] h-[20px] bg-white rounded-full flex justify-center items-center text-black text-[10px]">
+                  {pendingBlogs.length}
+                </div>
+              </button>
+            </li>
+          )}
+          {data.userData.userInfo[0].role === "owner" && (
+            <li className="mb-4">
+              <button
+                onClick={() => changeTab("All Blogs")}
+                className={`text-white hover:text-gray-400 ${
+                  activeTab === "All Blogs" ? "font-bold" : ""
+                }`}
+              >
+                All Blogs
               </button>
             </li>
           )}
@@ -194,6 +212,12 @@ const Sidebar = () => {
               <PendingPosts />
             </div>
           )}
+          {activeTab === "All Blogs" && (
+            <div>
+              <h1 className="text-2xl font-bold mb-4">All Blogs</h1>
+        <AllBlogs/>
+            </div>
+          )}
           {activeTab === "contact" && (
             <div>
               <h1 className="text-2xl font-bold mb-4">Contact</h1>
@@ -207,7 +231,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-
-
-
