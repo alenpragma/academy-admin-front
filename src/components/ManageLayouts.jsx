@@ -22,7 +22,7 @@ const ManageLayouts = () => {
 
   let handleNavDataSend = () => {
     axios
-      .post("http://localhost:8000/api/v1/layouts/addnavdata", {
+      .post("https://academy-backend-95ag.onrender.com/api/v1/layouts/addnavdata", {
         name: navVal,
       })
       .then(() => {
@@ -31,7 +31,7 @@ const ManageLayouts = () => {
   };
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/v1/layouts/getnav")
+      .get("https://academy-backend-95ag.onrender.com/api/v1/layouts/getnav")
       .then((response) => {
         setGetNavItems(response.data);
       });
@@ -39,7 +39,7 @@ const ManageLayouts = () => {
 
   let handleDelete = (id) =>{
     axios
-    .post("http://localhost:8000/api/v1/layouts/deletenav", {
+    .post("https://academy-backend-95ag.onrender.com/api/v1/layouts/deletenav", {
         navdataId: id,
     })
     .then(() => {
