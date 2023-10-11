@@ -8,6 +8,7 @@ import AddBlog from "./AddBlog";
 import PendingPosts from "./PendingPosts";
 import axios from "axios";
 import AllBlogs from "./AllBlogs";
+import ManageLayouts from "./ManageLayouts";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -159,6 +160,20 @@ const Sidebar = () => {
               </button>
             </li>
           )}
+          {
+            data.userData.userInfo[0].role === "owner" && 
+
+          <li className="mb-4">
+            <button
+              onClick={() => changeTab("Manage Layouts")}
+              className={`text-white hover:text-gray-400 ${
+                activeTab === "Manage Layouts" ? "font-bold" : ""
+              }`}
+            >
+              Manage Layouts
+            </button>
+          </li>
+          }
           <li className="mb-4">
             <button
               onClick={() => changeTab("contact")}
@@ -216,6 +231,12 @@ const Sidebar = () => {
             <div>
               <h1 className="text-2xl font-bold mb-4">All Blogs</h1>
         <AllBlogs/>
+            </div>
+          )}
+           {activeTab === "Manage Layouts" && (
+            <div>
+              <h1 className="text-2xl font-bold mb-4">Manage Layouts</h1>
+              <p><ManageLayouts/></p>
             </div>
           )}
           {activeTab === "contact" && (
