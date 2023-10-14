@@ -84,7 +84,8 @@ const Sidebar = () => {
         }`}
       >
         <div className="text-white text-2xl font-bold">
-          Academy Admin Dashboard
+         <img src="https://i.postimg.cc/G2sLqVy3/1500-x-00-LOGO-01-1.png" className="w-[150px] h-auto" alt="" />
+         Admin Dashboard
         </div>
         <div className="mt-3">
           <small className="text-[16px] mt-3  font-bold text-white">
