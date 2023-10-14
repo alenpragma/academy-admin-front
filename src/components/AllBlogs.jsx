@@ -64,7 +64,7 @@ const AllBlogs = () => {
               <div>
                 <h2 className="text-lg font-semibold">{blog.title}</h2>
                 <p className="text-gray-600">
-                  {truncateText(blog.content, 20)}
+                  {blog.content && truncateText(blog.content, 20)}
                 </p>
                 <small
                   className={`${

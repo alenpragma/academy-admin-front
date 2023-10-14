@@ -5,7 +5,7 @@ const ManageLayouts = () => {
   let [navShow, setNavShow] = useState(false);
   let [navitem, setNavitem] = useState(false);
   let [navVal, setNavVal] = useState("");
-  let [getNavItems, setGetNavItems] = useState([]);
+  let [getNavItems, setGetNavItems] = useState();
   let handleNavChange = (e) => {
     setNavShow(true);
     setNavVal(
